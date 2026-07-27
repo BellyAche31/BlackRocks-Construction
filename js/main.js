@@ -19,12 +19,14 @@ document.addEventListener('DOMContentLoaded', function () {
     toggle.addEventListener('click', function () {
       var open = links.classList.toggle('is-open');
       toggle.classList.toggle('is-open', open);
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
       document.body.style.overflow = open ? 'hidden' : '';
     });
     links.querySelectorAll('a').forEach(function (a) {
       a.addEventListener('click', function () {
         links.classList.remove('is-open');
         toggle.classList.remove('is-open');
+        toggle.setAttribute('aria-expanded', 'false');
         document.body.style.overflow = '';
       });
     });
@@ -82,12 +84,19 @@ document.addEventListener('DOMContentLoaded', function () {
   var lightbox = document.querySelector('.lightbox');
   if (galleryItems.length && lightbox) {
     var lbImg = lightbox.querySelector('img');
+    var lbCap = lightbox.querySelector('.lightbox-caption');
     var current = 0;
 
-    function openAt(i) {
+    function show(i) {
       current = i;
-      lbImg.src = galleryItems[current].getAttribute('data-lightbox');
-      lbImg.alt = galleryItems[current].getAttribute('data-caption') || '';
+      var item = galleryItems[current];
+      var caption = item.getAttribute('data-caption') || '';
+      lbImg.src = item.getAttribute('data-lightbox');
+      lbImg.alt = caption;
+      if (lbCap) lbCap.textContent = caption;
+    }
+    function openAt(i) {
+      show(i);
       lightbox.classList.add('is-open');
       document.body.style.overflow = 'hidden';
     }
@@ -96,9 +105,13 @@ document.addEventListener('DOMContentLoaded', function () {
       document.body.style.overflow = '';
     }
     function step(dir) {
-      current = (current + dir + galleryItems.length) % galleryItems.length;
-      lbImg.src = galleryItems[current].getAttribute('data-lightbox');
-      lbImg.alt = galleryItems[current].getAttribute('data-caption') || '';
+      // only cycle through items currently visible under the active filter
+      var visible = galleryItems.filter(function (el) { return el.style.display !== 'none'; });
+      if (!visible.length) return;
+      var pos = visible.indexOf(galleryItems[current]);
+      if (pos === -1) pos = 0;
+      var next = visible[(pos + dir + visible.length) % visible.length];
+      show(galleryItems.indexOf(next));
     }
 
     galleryItems.forEach(function (item, i) {
