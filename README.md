@@ -59,11 +59,20 @@ This is a static site, so any of these work with zero config:
 1. Push this folder to a GitHub repo (already done if you're reading this from one)
 2. Import the repo at [vercel.com/new](https://vercel.com/new) — no build command needed, output directory is `/`
 
-**GitHub Pages**
-1. Push to GitHub, then in the repo go to Settings → Pages
-2. Set source to the `main` branch, root folder
+**GitHub Pages** — recommended if you want it to update itself
+1. In the repo, go to Settings → Pages
+2. Set source to the branch holding this code, root (`/`) folder
+3. You get a free `*.github.io` URL, and it **redeploys automatically every time the
+   code is pushed** — nothing to re-upload
 
 Once you pick a real domain, update the placeholder URLs in `sitemap.xml` and `robots.txt`.
+
+### A note on preview links
+
+Any temporary preview URL you may have been given during development is a throwaway —
+it is a snapshot, it is not owned by you, and it does not update when the code changes.
+Use one of the three options above for the real thing. GitHub Pages and Netlify are both
+free, both give you a link you control, and both serve the image files directly.
 
 ## Editing content
 
